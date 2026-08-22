@@ -4,11 +4,24 @@ A full-stack, database-driven web application built with **Python 3, Django, MyS
 
 ---
 
+## ⚡ Quick One-Click Launch (Windows)
+
+Simply double-click `start.bat` or run:
+```cmd
+start.bat
+```
+This launcher allows you to choose:
+- **[1] Automatic Setup & Start Server**: Installs dependencies, creates `.env`, applies MySQL migrations, seeds demo data, opens the browser, and starts the server.
+- **[2] Apply Migrations Only**
+- **[3] Seed / Reset Demo Data Only**
+- **[4] Start Development Server Only**
+
+---
+
 ## 🏛️ Database Architecture & Authenticity
 
 This application uses **MySQL as its true persistent relational database**.
 
-### How the Database Works
 ```text
 Django Models
       ↓
@@ -66,13 +79,9 @@ Dashboard & Dynamic HTML Tables
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Manual Start Guide
 
-### 1. Prerequisites
-- Python 3.10+
-- MySQL Server (e.g. MySQL 8.0)
-
-### 2. Setup Environment
+### 1. Setup Environment
 ```bash
 # Clone the repository
 git clone https://github.com/lucifer5051/medical-inventory-management-system.git
@@ -82,7 +91,7 @@ cd medical-inventory-management-system
 pip install -r requirements.txt
 ```
 
-### 3. Database Configuration
+### 2. Database Configuration
 Copy `.env.example` to `.env` and set your MySQL credentials:
 ```ini
 DB_ENGINE=django.db.backends.mysql
@@ -93,7 +102,7 @@ DB_HOST=localhost
 DB_PORT=3306
 ```
 
-### 4. Run Migrations & Seed Data
+### 3. Run Migrations & Seed Data
 ```bash
 # Apply migrations to MySQL
 python manage.py makemigrations
@@ -103,7 +112,7 @@ python manage.py migrate
 python manage.py seed_data
 ```
 
-### 5. Start Development Server
+### 4. Start Development Server
 ```bash
 python manage.py runserver 127.0.0.1:8000
 ```
@@ -121,6 +130,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
 ```text
 medical_inventory/
+├── start.bat
 ├── manage.py
 ├── requirements.txt
 ├── .env.example
