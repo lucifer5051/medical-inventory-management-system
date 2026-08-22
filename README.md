@@ -4,17 +4,18 @@ A full-stack, database-driven web application built with **Python 3, Django, MyS
 
 ---
 
-## ⚡ Quick One-Click Launch (Windows)
+## ⚡ Quick One-Click Automatic Launch (Windows)
 
-Simply double-click `start.bat` or run:
+Double-click `start.bat` or run in command prompt:
 ```cmd
 start.bat
 ```
-This launcher allows you to choose:
-- **[1] Automatic Setup & Start Server**: Installs dependencies, creates `.env`, applies MySQL migrations, seeds demo data, opens the browser, and starts the server.
-- **[2] Apply Migrations Only**
-- **[3] Seed / Reset Demo Data Only**
-- **[4] Start Development Server Only**
+`start.bat` automatically:
+1. Installs required Python packages (`pip install -r requirements.txt`).
+2. Configures environment `.env`.
+3. Applies database schema migrations to MySQL.
+4. Seeds categories, suppliers, medicines, purchases, and sales into MySQL.
+5. Launches your web browser to `http://127.0.0.1:8000/` and starts the Django server.
 
 ---
 
@@ -79,7 +80,7 @@ Dashboard & Dynamic HTML Tables
 
 ---
 
-## 🚀 Manual Start Guide
+## 🚀 Manual Command Line Execution
 
 ### 1. Setup Environment
 ```bash
@@ -108,7 +109,7 @@ DB_PORT=3306
 python manage.py makemigrations
 python manage.py migrate
 
-# Populate sample data (creates demo superuser: admin / admin123)
+# Populate sample data into MySQL
 python manage.py seed_data
 ```
 
@@ -117,12 +118,6 @@ python manage.py seed_data
 python manage.py runserver 127.0.0.1:8000
 ```
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
-
----
-
-## 🔑 Demo Account Credentials
-- **Username**: `admin`
-- **Password**: `admin123`
 
 ---
 
