@@ -1,0 +1,74 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Record Sale — Medical Inventory System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-7">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <div>
+                <h2 class="fw-bold text-dark mb-1">Record Medicine Sale</h2>
+                <p class="text-muted small mb-0">Stock availability will be validated before saving to MySQL</p>
+            </div>
+            <a href="{% url 'sale_list' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to History
+            </a>
+        </div>
+
+        <div class="card card-custom p-4 mb-4">
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mb-3">
+                        {% for error in form.non_field_errors %}
+                            <div><i class="bi bi-exclamation-triangle-fill me-1"></i> {{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="{{ form.medicine.id_for_label }}" class="form-label font-monospace fw-semibold small text-uppercase">Select Medicine *</label>
+                        {{ form.medicine }}
+                        {% if form.medicine.errors %}<div class="text-danger small mt-1">{{ form.medicine.errors.0 }}</div>{% endif %}
+                        <div id="available_stock_display" class="form-text mt-1 font-monospace">Select a medicine to view available stock...</div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="{{ form.quantity.id_for_label }}" class="form-label font-monospace fw-semibold small text-uppercase">Quantity to Sell *</label>
+                        {{ form.quantity }}
+                        {% if form.quantity.errors %}<div class="text-danger small mt-1">{{ form.quantity.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="{{ form.selling_price.id_for_label }}" class="form-label font-monospace fw-semibold small text-uppercase">Selling Price per Unit (₹) *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            {{ form.selling_price }}
+                        </div>
+                        {% if form.selling_price.errors %}<div class="text-danger small mt-1">{{ form.selling_price.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <div class="col-12">
+                        <div class="p-3 bg-light rounded border d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-secondary">Total Sale Revenue:</span>
+                            <span class="fs-4 fw-bold text-primary" id="sale_total_display">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="{{ form.sale_date.id_for_label }}" class="form-label font-monospace fw-semibold small text-uppercase">Sale Date *</label>
+                        {{ form.sale_date }}
+                        {% if form.sale_date.errors %}<div class="text-danger small mt-1">{{ form.sale_date.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-4">
+                    <a href="{% url 'sale_list' %}" class="btn btn-secondary px-4 fw-semibold">Cancel</a>
+                    <button type="submit" class="btn btn-info text-white px-4 fw-semibold"><i class="bi bi-cart-check me-1"></i> Save Sale & Decrease Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

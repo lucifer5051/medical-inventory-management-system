@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Medical Inventory Management System for managing medicines, categories, suppliers, stock purchases, sales, and analytics.">
+    <title>{% block title %}Medical Inventory System{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{% static 'inventory/css/style.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar Navigation -->
+        {% if user.is_authenticated %}
+        <div id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <i class="bi bi-hospital"></i>
+                <span>MedInventory</span>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'medicine_list' %}" class="nav-link {% if 'medicine' in request.resolver_match.url_name %}active{% endif %}">
+                        <i class="bi bi-capsule"></i> Medicines
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'category_list' %}" class="nav-link {% if 'category' in request.resolver_match.url_name %}active{% endif %}">
+                        <i class="bi bi-tags"></i> Categories
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'supplier_list' %}" class="nav-link {% if 'supplier' in request.resolver_match.url_name %}active{% endif %}">
+                        <i class="bi bi-truck"></i> Suppliers
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'purchase_list' %}" class="nav-link {% if 'purchase' in request.resolver_match.url_name %}active{% endif %}">
+                        <i class="bi bi-cart-plus"></i> Purchases
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'sale_list' %}" class="nav-link {% if 'sale' in request.resolver_match.url_name %}active{% endif %}">
+                        <i class="bi bi-cart-check"></i> Sales
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'transaction_list' %}" class="nav-link {% if 'transaction' in request.resolver_match.url_name %}active{% endif %}">
+                        <i class="bi bi-arrow-left-right"></i> Stock Transactions
+                    </a>
+                </div>
+
+                <div class="px-3 pt-3 pb-1 text-uppercase text-muted fw-bold" style="font-size: 0.65rem; letter-spacing: 0.8px;">Reports</div>
+                <div class="nav-item">
+                    <a href="{% url 'report_inventory' %}" class="nav-link {% if request.resolver_match.url_name == 'report_inventory' %}active{% endif %}">
+                        <i class="bi bi-file-earmark-bar-graph"></i> Inventory Valuation
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'report_expiry' %}" class="nav-link {% if request.resolver_match.url_name == 'report_expiry' %}active{% endif %}">
+                        <i class="bi bi-exclamation-triangle"></i> Expiry Analysis
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'report_low_stock' %}" class="nav-link {% if request.resolver_match.url_name == 'report_low_stock' %}active{% endif %}">
+                        <i class="bi bi-graph-down-arrow"></i> Low Stock Report
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'report_purchases' %}" class="nav-link {% if request.resolver_match.url_name == 'report_purchases' %}active{% endif %}">
+                        <i class="bi bi-journal-text"></i> Purchase Report
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{% url 'report_sales' %}" class="nav-link {% if request.resolver_match.url_name == 'report_sales' %}active{% endif %}">
+                        <i class="bi bi-currency-dollar"></i> Sales Report
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="d-flex align-items-center justify-content-between text-white-50 small">
+                    <div>
+                        <i class="bi bi-person-circle me-1"></i> {{ user.username }}
+                    </div>
+                    <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light py-0 px-2" title="Logout">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="{% if not user.is_authenticated %}w-100 m-0{% endif %}">
+            {% if user.is_authenticated %}
+            <!-- Top Header Bar -->
+            <header class="top-header">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-light btn-sm d-lg-none" id="menu-toggle" aria-label="Toggle Navigation">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    <div>
+                        <span class="fw-bold fs-6 text-dark">Medical Inventory Management System</span>
+                        <div class="text-muted small" style="font-size: 0.75rem;">Medical Store & Pharmacy Stock Control</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end d-none d-md-block" style="font-size: 0.8rem;">
+                        <div class="fw-semibold text-secondary"><i class="bi bi-calendar3 me-1"></i>{% now "F j, Y" %}</div>
+                    </div>
+                    <span class="header-title-badge"><i class="bi bi-person-fill me-1"></i> {{ user.username|title }}</span>
+                </div>
+            </header>
+            {% endif %}
+
+            <!-- Flash Messages -->
+            <main class="container-fluid p-4 flex-grow-1">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                            {% if message.tags == 'success' %}
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                            {% elif message.tags == 'error' or message.tags == 'danger' %}
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {% elif message.tags == 'warning' %}
+                                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                            {% else %}
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                            {% endif %}
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </main>
+
+            <!-- Footer -->
+            <footer class="bg-white border-top py-3 px-4 mt-auto">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted">
+                    <div>© {% now "Y" %} Medical Inventory Management System — College Project Demonstration</div>
+                    <div>Powered by Python 3 & Django & MySQL</div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'inventory/js/script.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

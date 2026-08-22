@@ -1,0 +1,79 @@
+{% extends 'inventory/base.html' %}
+{% load currency_tags %}
+
+{% block title %}Sales — Medical Inventory System{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 pb-2 border-bottom">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Sales Records</h2>
+        <p class="text-muted small mb-0">Track medicine sales and stock reduction events</p>
+    </div>
+    <a href="{% url 'sale_add' %}" class="btn btn-info text-white fw-semibold shadow-sm mt-3 mt-md-0">
+        <i class="bi bi-plus-lg me-1"></i> New Sale
+    </a>
+</div>
+
+<div class="card card-custom p-3 mb-4">
+    <div class="table-responsive">
+        <table class="table table-custom align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>SALE ID</th>
+                    <th>MEDICINE</th>
+                    <th>QUANTITY SOLD</th>
+                    <th>UNIT SELLING PRICE</th>
+                    <th>TOTAL AMOUNT</th>
+                    <th>SALE DATE</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if page_obj %}
+                    {% for s in page_obj %}
+                    <tr>
+                        <td><code class="fw-bold text-dark">#SALE-{{ s.id }}</code></td>
+                        <td>
+                            <a href="{% url 'medicine_detail' s.medicine.pk %}" class="fw-bold text-decoration-none text-dark">{{ s.medicine.name }}</a>
+                        </td>
+                        <td><span class="badge bg-info-subtle text-info border border-info-subtle px-3 py-1">-{{ s.quantity }} units</span></td>
+                        <td>{{ s.selling_price|indian_currency }}</td>
+                        <td><strong class="text-primary">{{ s.total_amount|indian_currency }}</strong></td>
+                        <td class="small text-muted">{{ s.sale_date|date:"d M Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No sales recorded yet.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination pagination-sm justify-content-center mb-0">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

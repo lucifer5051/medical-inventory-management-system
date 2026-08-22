@@ -1,0 +1,59 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Categories — Medical Inventory System{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 pb-2 border-bottom">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Medicine Categories</h2>
+        <p class="text-muted small mb-0">Organize pharmaceutical products into clear therapeutic classifications</p>
+    </div>
+    <a href="{% url 'category_add' %}" class="btn btn-primary fw-semibold shadow-sm mt-3 mt-md-0">
+        <i class="bi bi-plus-lg me-1"></i> Add Category
+    </a>
+</div>
+
+<div class="card card-custom p-3 mb-4">
+    <div class="table-responsive">
+        <table class="table table-custom align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>CATEGORY NAME</th>
+                    <th>DESCRIPTION</th>
+                    <th>ASSOCIATED MEDICINES</th>
+                    <th>CREATED AT</th>
+                    <th class="text-end">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if categories %}
+                    {% for cat in categories %}
+                    <tr>
+                        <td class="fw-bold text-dark">{{ cat.name }}</td>
+                        <td class="small text-muted">{{ cat.description|default:"—" }}</td>
+                        <td>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1">
+                                {{ cat.medicine_count }} medicines
+                            </span>
+                        </td>
+                        <td class="small text-muted">{{ cat.created_at|date:"d M Y" }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'category_edit' cat.pk %}" class="btn btn-sm btn-action-edit me-1" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'category_delete' cat.pk %}" class="btn btn-sm btn-action-delete" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No categories created yet.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
