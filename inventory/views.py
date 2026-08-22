@@ -55,19 +55,20 @@ def user_logout_view(request):
 def dashboard_view(request):
     """
     Main Analytics Dashboard.
-    Calculates real-time statistics strictly from the MySQL database.
+    Calculates real-time operational metrics strictly from MySQL database.
     """
     today = timezone.now().date()
     thirty_days_later = today + datetime.timedelta(days=30)
 
-    # Summary Cards
+    # 1. Summary Cards (7 metrics)
     total_medicines = Medicine.objects.count()
     total_stock_aggregate = Medicine.objects.aggregate(total=Sum('quantity'))['total'] or 0
 
     low_stock_medicines = Medicine.objects.filter(quantity__gt=0, quantity__lte=F('minimum_stock'))
     low_stock_count = low_stock_medicines.count()
 
-    out_of_stock_count = Medicine.objects.filter(quantity=0).count()
+    out_of_stock_medicines = Medicine.objects.filter(quantity=0)
+    out_of_stock_count = out_of_stock_medicines.count()
 
     expired_medicines = Medicine.objects.filter(expiry_date__lt=today)
     expired_count = expired_medicines.count()
@@ -81,7 +82,63 @@ def dashboard_view(request):
         val=Sum(F('quantity') * F('purchase_price'))
     )['val'] or Decimal('0.00')
 
-    # Category breakdown query
+    # 2. Operational Alerts Panel items
+    operational_alerts = []
+    
+    # Critical Out of Stock alerts
+    for m in out_of_stock_medicines[:4]:
+        operational_alerts.append({
+            'type': 'CRITICAL',
+            'badge_class': 'bg-danger text-white',
+            'icon': 'bi-x-octagon-fill',
+            'medicine_name': m.name,
+            'medicine_id': m.id,
+            'message': 'Out of stock (0 units remaining)',
+            'link': f"/medicines/?stock=out"
+        })
+
+    # Critical Expired alerts
+    for m in expired_medicines[:3]:
+        operational_alerts.append({
+            'type': 'EXPIRED',
+            'badge_class': 'bg-purple text-white',
+            'icon': 'bi-trash-fill',
+            'medicine_name': m.name,
+            'medicine_id': m.id,
+            'message': f"Expired on {m.expiry_date.strftime('%d %b %Y')} ({m.quantity} units in stock)",
+            'link': f"/medicines/?expiry=expired"
+        })
+
+    # Warning Low Stock alerts
+    for m in low_stock_medicines[:4]:
+        operational_alerts.append({
+            'type': 'WARNING',
+            'badge_class': 'bg-warning text-dark',
+            'icon': 'bi-exclamation-triangle-fill',
+            'medicine_name': m.name,
+            'medicine_id': m.id,
+            'message': f"Low stock alert ({m.quantity} units remaining <= min {m.minimum_stock})",
+            'link': f"/medicines/?stock=low"
+        })
+
+    # Warning Expiring Soon alerts
+    for m in expiring_soon_medicines[:3]:
+        days_left = (m.expiry_date - today).days
+        days_text = "Today" if days_left == 0 else f"in {days_left} days"
+        operational_alerts.append({
+            'type': 'EXPIRING',
+            'badge_class': 'bg-orange text-white',
+            'icon': 'bi-clock-history',
+            'medicine_name': m.name,
+            'medicine_id': m.id,
+            'message': f"Expires {days_text} ({m.expiry_date.strftime('%d %b %Y')})",
+            'link': f"/medicines/?expiry=expiring_soon"
+        })
+
+    # 3. Recent Activity Log (from StockTransaction)
+    recent_activity = StockTransaction.objects.select_related('medicine').all()[:10]
+
+    # 4. Stock by Category breakdown
     category_data = Category.objects.annotate(
         stock=Sum('medicines__quantity')
     ).values('name', 'stock')
@@ -102,7 +159,7 @@ def dashboard_view(request):
             'percentage': pct
         })
 
-    # Search & Recent Table on Dashboard
+    # 5. Inventory Table with Search
     search_query = request.GET.get('q', '').strip()
     medicines_qs = Medicine.objects.select_related('category', 'supplier').all()
 
@@ -114,7 +171,7 @@ def dashboard_view(request):
             Q(batch_number__icontains=search_query)
         )
 
-    recent_medicines = medicines_qs[:10]
+    recent_medicines = medicines_qs[:12]
 
     context = {
         'today': today,
@@ -126,6 +183,8 @@ def dashboard_view(request):
         'expiring_soon_count': expiring_soon_count,
         'safe_count': safe_count,
         'total_stock_value': total_stock_value,
+        'operational_alerts': operational_alerts,
+        'recent_activity': recent_activity,
         'category_list': category_list,
         'recent_medicines': recent_medicines,
         'search_query': search_query,

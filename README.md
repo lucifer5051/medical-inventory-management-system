@@ -4,6 +4,31 @@ A full-stack, database-driven web application built with **Python 3, Django, MyS
 
 ---
 
+## 🏛️ Database Architecture & Authenticity
+
+This application uses **MySQL as its true persistent relational database**.
+
+### How the Database Works
+```text
+Django Models
+      ↓
+Django Migrations
+      ↓
+MySQL Database Tables
+      ↓
+Django ORM (Object-Relational Mapper)
+      ↓
+Dashboard & Dynamic HTML Tables
+```
+
+### Why is there no static `.sql` dump file in the repository?
+- The database schema is defined and managed centrally using **Django Models** (`inventory/models.py`).
+- Database tables in MySQL are generated dynamically using **Django Migrations** (`python manage.py migrate`).
+- Demonstration data is populated into MySQL using the custom Django management command `python manage.py seed_data`.
+- All analytics metrics, alerts, tables, stock updates, purchases, and sales operate on **live MySQL queries** using the Django ORM.
+
+---
+
 ## 🌟 Key Features
 
 - **Authentication System**: Built-in Django authentication with login/logout and session protection.
@@ -11,28 +36,32 @@ A full-stack, database-driven web application built with **Python 3, Django, MyS
   - Total Medicines count
   - Total Available Stock
   - Low Stock Alerts
+  - Out of Stock Items
   - Expired Medicines
   - Expiring Soon (Within 30 Days)
   - Total Stock Valuation in Indian Currency (`₹`)
+- **Operational Alerts Panel**: Instant visual alerts for critical out-of-stock, expired, and expiring items.
+- **Recent Activity Log**: Real-time audit trail of the latest 10 inventory transactions.
 - **Stock Control & Relational Integrity**:
-  - **Category & Supplier Management**: Reusable foreign key relationships.
-  - **Atomic Purchases**: Automatically increases stock levels and records audit transactions.
+  - **Category & Supplier Management**: Reusable foreign key relationships across 14 categories and 10 suppliers.
+  - **Atomic Purchases**: Automatically increases stock levels and records `PURCHASE` audit transactions.
   - **Atomic Sales**: Validates stock availability server-side; rejects sales if `requested > available` stock.
-  - **Deletion Rules**: Prevents deletion of medicines with transaction history.
+  - **Deletion Protection**: Prevents deletion of medicines with transaction history.
 - **Reports**:
   - Inventory Valuation Report
   - Expiry Risk Analysis Report
   - Low Stock & Reorder Report
   - Purchase History Summary Report
   - Sales Revenue Summary Report
-- **Seed Data Management**: Built-in `seed_data` command to populate realistic sample medicines, categories, suppliers, purchases, and sales.
+  - Stock Movement Audit Log
+- **Seed Data System**: Built-in `seed_data` command creating 14 categories, 10 suppliers, 25 medicines, 25+ purchases, 45+ sales, and 70+ stock transactions with 100% mathematical consistency.
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Backend**: Python 3, Django
-- **Database**: MySQL (Django ORM)
+- **Backend**: Python 3, Django 6
+- **Database**: MySQL Server (`medical_inventory`) via `django.db.backends.mysql`
 - **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5, Bootstrap Icons
 
 ---

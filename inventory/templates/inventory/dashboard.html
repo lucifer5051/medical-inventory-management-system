@@ -8,7 +8,7 @@
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 pb-2 border-bottom">
     <div>
         <h2 class="fw-bold text-dark mb-1">MEDICAL INVENTORY DASHBOARD</h2>
-        <p class="text-muted small mb-0">Medical Store Inventory & Management System — Real-time MySQL Analytics</p>
+        <p class="text-muted small mb-0">Modern Pharmacy Operations Dashboard — Live MySQL Data Analytics</p>
     </div>
     <div class="mt-3 mt-md-0 d-flex gap-2">
         <a href="{% url 'medicine_add' %}" class="btn btn-primary btn-sm fw-semibold shadow-sm">
@@ -23,10 +23,10 @@
     </div>
 </div>
 
-<!-- 6 Summary Cards -->
+<!-- 7 Summary Cards -->
 <div class="row g-3 mb-4">
     <!-- Card 1: Total Medicines -->
-    <div class="col-12 col-sm-6 col-xl-2">
+    <div class="col-12 col-sm-6 col-md-4 col-xl-2">
         <div class="stat-card">
             <div class="stat-icon bg-primary-subtle text-primary">
                 <i class="bi bi-capsule"></i>
@@ -37,57 +37,147 @@
     </div>
 
     <!-- Card 2: Total Stock -->
-    <div class="col-12 col-sm-6 col-xl-2">
+    <div class="col-12 col-sm-6 col-md-4 col-xl-2">
         <div class="stat-card">
             <div class="stat-icon bg-info-subtle text-info">
                 <i class="bi bi-boxes"></i>
             </div>
             <div class="stat-val">{{ total_stock }}</div>
-            <div class="stat-label">Total Stock</div>
+            <div class="stat-label">Total Stock Units</div>
         </div>
     </div>
 
     <!-- Card 3: Low Stock -->
-    <div class="col-12 col-sm-6 col-xl-2">
+    <div class="col-12 col-sm-6 col-md-4 col-xl-2">
         <div class="stat-card">
             <div class="stat-icon bg-warning-subtle text-warning">
-                <i class="bi bi-exclamation-circle"></i>
+                <i class="bi bi-exclamation-triangle"></i>
             </div>
             <div class="stat-val text-warning">{{ low_stock_count }}</div>
-            <div class="stat-label">Low Stock</div>
+            <div class="stat-label">Low Stock Alerts</div>
         </div>
     </div>
 
-    <!-- Card 4: Expired -->
-    <div class="col-12 col-sm-6 col-xl-2">
+    <!-- Card 4: Out of Stock -->
+    <div class="col-12 col-sm-6 col-md-4 col-xl-2">
         <div class="stat-card">
             <div class="stat-icon bg-danger-subtle text-danger">
-                <i class="bi bi-x-circle"></i>
+                <i class="bi bi-x-octagon"></i>
             </div>
-            <div class="stat-val text-danger">{{ expired_count }}</div>
-            <div class="stat-label">Expired Medicines</div>
+            <div class="stat-val text-danger">{{ out_of_stock_count }}</div>
+            <div class="stat-label">Out of Stock</div>
         </div>
     </div>
 
     <!-- Card 5: Expiring Soon -->
-    <div class="col-12 col-sm-6 col-xl-2">
+    <div class="col-12 col-sm-6 col-md-4 col-xl-2">
         <div class="stat-card">
-            <div class="stat-icon bg-orange-subtle text-warning" style="background-color: #ffedd5;">
-                <i class="bi bi-clock-history text-danger"></i>
+            <div class="stat-icon bg-orange-subtle text-orange" style="background-color: #ffedd5; color: #c2410c;">
+                <i class="bi bi-clock-history"></i>
             </div>
-            <div class="stat-val text-orange" style="color: #c2410c;">{{ expiring_soon_count }}</div>
-            <div class="stat-label">Expiring Soon</div>
+            <div class="stat-val" style="color: #c2410c;">{{ expiring_soon_count }}</div>
+            <div class="stat-label">Expiring Soon (30d)</div>
         </div>
     </div>
 
-    <!-- Card 6: Total Stock Value -->
-    <div class="col-12 col-sm-6 col-xl-2">
+    <!-- Card 6: Expired -->
+    <div class="col-12 col-sm-6 col-md-4 col-xl-2">
         <div class="stat-card">
-            <div class="stat-icon bg-success-subtle text-success">
-                <i class="bi bi-currency-rupee"></i>
+            <div class="stat-icon" style="background-color: #f3e8ff; color: #6b21a8;">
+                <i class="bi bi-trash"></i>
             </div>
-            <div class="stat-val text-success" style="font-size: 1.35rem;">{{ total_stock_value|indian_currency }}</div>
-            <div class="stat-label">Stock Value</div>
+            <div class="stat-val" style="color: #6b21a8;">{{ expired_count }}</div>
+            <div class="stat-label">Expired Medicines</div>
+        </div>
+    </div>
+
+    <!-- Card 7: Total Stock Value -->
+    <div class="col-12 col-sm-12 col-md-4 col-xl-12 mt-3">
+        <div class="stat-card bg-success-subtle border-success-subtle d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon bg-success text-white mb-0">
+                    <i class="bi bi-currency-rupee"></i>
+                </div>
+                <div>
+                    <div class="stat-label text-success font-monospace fw-bold">Total Inventory Valuation</div>
+                    <div class="stat-val text-success">{{ total_stock_value|indian_currency }}</div>
+                </div>
+            </div>
+            <div class="text-end d-none d-md-block">
+                <span class="badge bg-success text-white px-3 py-2">Valuation from Cost Prices</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Operational Alert Panel & Recent Activity -->
+<div class="row g-4 mb-4">
+    <!-- Operational Alerts Panel -->
+    <div class="col-12 col-lg-6">
+        <div class="card card-custom h-100 p-3 border-warning">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-bell-fill text-warning me-2"></i>Inventory Operational Alerts</h5>
+                <span class="badge bg-warning text-dark font-monospace">{{ operational_alerts|length }} Items Require Attention</span>
+            </div>
+            <div class="pe-2" style="max-height: 280px; overflow-y: auto;">
+                {% if operational_alerts %}
+                    {% for alert in operational_alerts %}
+                    <div class="p-2.5 p-md-3 rounded mb-2 d-flex align-items-center justify-content-between border bg-light">
+                        <div class="d-flex align-items-center gap-2.5">
+                            <span class="badge {{ alert.badge_class }} p-2 rounded-2"><i class="bi {{ alert.icon }}"></i></span>
+                            <div>
+                                <a href="{% url 'medicine_detail' alert.medicine_id %}" class="fw-bold text-dark text-decoration-none d-block small">{{ alert.medicine_name }}</a>
+                                <div class="text-secondary small" style="font-size: 0.78rem;">{{ alert.message }}</div>
+                            </div>
+                        </div>
+                        <a href="{{ alert.link }}" class="btn btn-sm btn-outline-dark py-1 px-2 font-monospace" style="font-size: 0.75rem;">View <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-check-circle fs-3 text-success d-block mb-1"></i>
+                        No urgent inventory alerts at this time.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Inventory Activity Log -->
+    <div class="col-12 col-lg-6">
+        <div class="card card-custom h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-activity text-primary me-2"></i>Recent Inventory Activity</h5>
+                <a href="{% url 'transaction_list' %}" class="small text-decoration-none">Complete Audit Log →</a>
+            </div>
+            <div class="pe-2" style="max-height: 280px; overflow-y: auto;">
+                {% if recent_activity %}
+                    {% for tx in recent_activity %}
+                    <div class="d-flex justify-content-between align-items-center p-2 mb-1 border-bottom small">
+                        <div>
+                            <span class="text-muted font-monospace me-2" style="font-size: 0.75rem;">{{ tx.transaction_date|date:"d M H:i" }}</span>
+                            <a href="{% url 'medicine_detail' tx.medicine.pk %}" class="fw-semibold text-dark text-decoration-none me-2">{{ tx.medicine.name }}</a>
+                            {% if tx.transaction_type == 'PURCHASE' %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle">PURCHASE</span>
+                            {% elif tx.transaction_type == 'SALE' %}
+                                <span class="badge bg-info-subtle text-info border border-info-subtle">SALE</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary border">ADJUSTMENT</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if tx.quantity > 0 %}
+                                <span class="fw-bold text-success">+{{ tx.quantity }}</span>
+                            {% else %}
+                                <span class="fw-bold text-danger">{{ tx.quantity }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4 text-muted">No recent activity log recorded.</div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
@@ -98,10 +188,10 @@
     <div class="col-12 col-lg-7">
         <div class="card card-custom h-100 p-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Stock by Category</h5>
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Stock Distribution by Category</h5>
                 <a href="{% url 'category_list' %}" class="small text-decoration-none">Manage Categories →</a>
             </div>
-            <div class="pe-2" style="max-height: 260px; overflow-y: auto;">
+            <div class="pe-2" style="max-height: 250px; overflow-y: auto;">
                 {% if category_list %}
                     {% for cat in category_list %}
                     <div class="mb-3">
@@ -121,15 +211,15 @@
         </div>
     </div>
 
-    <!-- Expiry Overview -->
+    <!-- Expiry Health Overview -->
     <div class="col-12 col-lg-5">
         <div class="card card-custom h-100 p-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-shield-exclamation text-danger me-2"></i>Expiry Overview</h5>
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-shield-exclamation text-danger me-2"></i>Expiry Risk Breakdown</h5>
                 <a href="{% url 'report_expiry' %}" class="small text-decoration-none">Expiry Report →</a>
             </div>
 
-            <div class="d-flex flex-column gap-3 justify-content-center h-75">
+            <div class="d-flex flex-column gap-2.5 justify-content-center h-80">
                 <div class="p-3 rounded d-flex align-items-center justify-content-between" style="background-color: #f3e8ff; border: 1px solid #e9d5ff;">
                     <div class="d-flex align-items-center gap-3">
                         <i class="bi bi-x-circle-fill text-purple fs-3" style="color: #6b21a8;"></i>
@@ -138,12 +228,12 @@
                             <div class="small text-muted">Past expiry date</div>
                         </div>
                     </div>
-                    <span class="badge bg-purple px-3 py-2 fs-6 rounded-pill" style="background-color: #6b21a8;">{{ expired_count }}</span>
+                    <span class="badge px-3 py-2 fs-6 rounded-pill" style="background-color: #6b21a8;">{{ expired_count }}</span>
                 </div>
 
                 <div class="p-3 rounded d-flex align-items-center justify-content-between" style="background-color: #ffedd5; border: 1px solid #fed7aa;">
                     <div class="d-flex align-items-center gap-3">
-                        <i class="bi bi-exclamation-triangle-fill text-warning fs-3" style="color: #c2410c;"></i>
+                        <i class="bi bi-exclamation-triangle-fill fs-3" style="color: #c2410c;"></i>
                         <div>
                             <div class="fw-bold" style="color: #c2410c;">Expiring Soon</div>
                             <div class="small text-muted">Within 30 days</div>
@@ -230,8 +320,8 @@
 <div class="card card-custom p-3 mb-4">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
         <div>
-            <h5 class="fw-bold text-dark mb-0">Inventory Stock Table</h5>
-            <div class="small text-muted">Showing recent medicines from database</div>
+            <h5 class="fw-bold text-dark mb-0">Current Inventory Table</h5>
+            <div class="small text-muted">Live MySQL Database Records</div>
         </div>
         <form method="get" action="{% url 'dashboard' %}" class="d-flex gap-2" style="max-width: 350px;">
             <input type="text" name="q" value="{{ search_query }}" class="form-control form-control-sm" placeholder="Search medicine or category...">
